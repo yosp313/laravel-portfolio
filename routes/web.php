@@ -12,6 +12,9 @@ Route::get('/', function () {
     $projects = Project::with('skills')->get();
     $skills = Skill::all();
     $experiences = Experience::orderByDesc('start_year')->get();
+    foreach ($experiences as $exp) {
+        $exp->description = Experience::cleanMarkdown($exp->description);
+    }
     return view('portfolio', compact('profile', 'projects', 'skills', 'experiences'));
 })->name('portfolio');
 

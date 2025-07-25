@@ -31,7 +31,8 @@ class SkillResource extends Resource
                     ->image()
                     ->directory('skills')
                     ->disk('public')
-                    ->imageEditor(),
+                    ->imageEditor()
+                    ->helperText('Upload a small icon representing this skill.'),
             ]);
     }
 
@@ -39,21 +40,9 @@ class SkillResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('image_url')
-                    ->label('Icon'),
-                Tables\Columns\TextColumn::make('projects_count')
-                    ->counts('projects')
-                    ->label('Projects'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('image_url')->label('Icon'),
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('projects_count')->counts('projects')->label('Projects'),
             ])
             ->filters([
                 //

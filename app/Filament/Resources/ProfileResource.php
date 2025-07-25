@@ -23,21 +23,17 @@ class ProfileResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
-
                 Forms\Components\TextInput::make('phone')
                     ->tel()
                     ->maxLength(255),
-
                 Forms\Components\Textarea::make('bio')
                     ->rows(4)
                     ->maxLength(1000)
                     ->columnSpanFull(),
-
                 Forms\Components\FileUpload::make('avatar_url')
                     ->label('Profile Picture')
                     ->image()
@@ -46,23 +42,25 @@ class ProfileResource extends Resource
                     ->imageEditor()
                     ->circleCropper()
                     ->columnSpanFull(),
-
-                Forms\Components\TextInput::make('website_url')
-                    ->url()
-                    ->maxLength(255)
-                    ->prefixIcon('heroicon-m-globe-alt'),
-
-                Forms\Components\TextInput::make('linkedin_url')
-                    ->url()
-                    ->maxLength(255)
-                    ->prefixIcon('heroicon-m-user-group')
-                    ->placeholder('https://linkedin.com/in/username'),
-
-                Forms\Components\TextInput::make('github_url')
-                    ->url()
-                    ->maxLength(255)
-                    ->prefixIcon('heroicon-m-code-bracket')
-                    ->placeholder('https://github.com/username'),
+                Forms\Components\Fieldset::make('Social Links')
+                    ->schema([
+                        Forms\Components\TextInput::make('website_url')
+                            ->url()
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-m-globe-alt')
+                            ->placeholder('https://yourwebsite.com'),
+                        Forms\Components\TextInput::make('linkedin_url')
+                            ->url()
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-m-user-group')
+                            ->placeholder('https://linkedin.com/in/username'),
+                        Forms\Components\TextInput::make('github_url')
+                            ->url()
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-m-code-bracket')
+                            ->placeholder('https://github.com/username'),
+                    ])
+                    ->columns(1),
             ]);
     }
 
@@ -81,14 +79,19 @@ class ProfileResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('linkedin_url')
                     ->label('LinkedIn')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle'),
+                    ->icon('heroicon-o-link')
+                    ->url(fn($record) => $record->linkedin_url)
+                    ->openUrlInNewTab(),
                 Tables\Columns\IconColumn::make('github_url')
                     ->label('GitHub')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle'),
+                    ->icon('heroicon-o-link')
+                    ->url(fn($record) => $record->github_url)
+                    ->openUrlInNewTab(),
+                Tables\Columns\IconColumn::make('website_url')
+                    ->label('Website')
+                    ->icon('heroicon-o-link')
+                    ->url(fn($record) => $record->website_url)
+                    ->openUrlInNewTab(),
             ])
             ->filters([
                 //

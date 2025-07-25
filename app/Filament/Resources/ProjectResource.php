@@ -3,18 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
-use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Project;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProjectResource extends Resource
 {
@@ -27,38 +21,32 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                Textarea::make('description')->required(),
-                TextInput::make('image_url')->url(),
-                TextInput::make('github_url')->url(),
-                TextInput::make('live_url')->url(),
-
-                // Add multi-select for skills
-                Select::make('skills')
+                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\MarkdownEditor::make('description')->required()->label('Description')->helperText('Supports Markdown.'),
+                Forms\Components\TextInput::make('image_url')->url()->label('Image URL'),
+                Forms\Components\TextInput::make('github_url')->url()->label('GitHub URL')->placeholder('https://github.com/yourrepo'),
+                Forms\Components\TextInput::make('live_url')->url()->label('Live URL')->placeholder('https://yourproject.com'),
+                Forms\Components\Select::make('skills')
                     ->multiple()
                     ->relationship('skills', 'name')
                     ->preload()
                     ->createOptionForm([
-                        TextInput::make('name')->required(),
-                        TextInput::make('image_url')->url(),
+                        Forms\Components\TextInput::make('name')->required(),
+                        Forms\Components\TextInput::make('image_url')->url(),
                     ]),
             ]);
     }
-
-// ...existing code...
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('image_url')->label('Image')->circular(),
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('description')->label('Description')->limit(40),
+                Tables\Columns\TagsColumn::make('skills.name')->label('Skills'),
+                Tables\Columns\TextColumn::make('github_url')->label('GitHub')->url(fn($record) => $record->github_url)->openUrlInNewTab()->limit(20),
+                Tables\Columns\TextColumn::make('live_url')->label('Live')->url(fn($record) => $record->live_url)->openUrlInNewTab()->limit(20),
             ])
             ->filters([
                 //

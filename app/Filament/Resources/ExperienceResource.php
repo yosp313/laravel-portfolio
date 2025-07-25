@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\MarkdownColumn as TablesMarkdownColumn;
 
 class ExperienceResource extends Resource
 {
@@ -23,11 +24,32 @@ class ExperienceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->required(),
-                Forms\Components\TextInput::make('company')->required(),
-                Forms\Components\TextInput::make('start_year')->required()->numeric()->minValue(1900)->maxValue(2100),
-                Forms\Components\TextInput::make('end_year')->nullable()->numeric()->minValue(1900)->maxValue(2100),
-                Forms\Components\Textarea::make('description')->rows(4),
+                Forms\Components\TextInput::make('title')
+                    ->label('Job Title')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('company')
+                    ->label('Company')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('start_year')
+                    ->label('Start Year')
+                    ->required()
+                    ->numeric()
+                    ->minValue(1900)
+                    ->maxValue(2100)
+                    ->helperText('Year you started this job.'),
+                Forms\Components\TextInput::make('end_year')
+                    ->label('End Year')
+                    ->nullable()
+                    ->numeric()
+                    ->minValue(1900)
+                    ->maxValue(2100)
+                    ->helperText('Year you ended this job (leave blank if current).'),
+                Forms\Components\MarkdownEditor::make('description')
+                    ->label('Description')
+                    ->maxLength(1000)
+                    ->helperText('Supports Markdown. Describe your responsibilities and achievements.'),
             ]);
     }
 
@@ -35,11 +57,11 @@ class ExperienceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->searchable(),
-                Tables\Columns\TextColumn::make('company')->searchable(),
-                Tables\Columns\TextColumn::make('start_year'),
-                Tables\Columns\TextColumn::make('end_year'),
-                Tables\Columns\TextColumn::make('description')->limit(40),
+                Tables\Columns\TextColumn::make('title')->label('Job Title')->searchable(),
+                Tables\Columns\TextColumn::make('company')->label('Company')->searchable(),
+                Tables\Columns\TextColumn::make('start_year')->label('Start'),
+                Tables\Columns\TextColumn::make('end_year')->label('End'),
+                Tables\Columns\TextColumn::make('description')->label('Description')->limit(40),
             ])
             ->filters([
                 //

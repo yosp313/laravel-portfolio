@@ -6,6 +6,9 @@ use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Project;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -19,13 +22,30 @@ class ProjectResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')->required(),
+                Textarea::make('description')->required(),
+                TextInput::make('image_url')->url(),
+                TextInput::make('github_url')->url(),
+                TextInput::make('live_url')->url(),
+
+                // Add multi-select for skills
+                Select::make('skills')
+                    ->multiple()
+                    ->relationship('skills', 'name')
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('name')->required(),
+                        TextInput::make('image_url')->url(),
+                    ]),
             ]);
     }
+
+// ...existing code...
 
     public static function table(Table $table): Table
     {

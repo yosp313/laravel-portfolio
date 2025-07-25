@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model
 {
@@ -28,7 +28,7 @@ class Project extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Skill>
      */
-    public function skills(): HasMany {
-        return $this->hasMany(Skill::class);
+    public function skills(): BelongsToMany {
+        return $this->belongsToMany(Skill::class);
     }
 }

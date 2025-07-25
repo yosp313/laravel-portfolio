@@ -24,11 +24,14 @@ class SkillResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\FileUpload::make('image_url')
-                    ->image(),
-                Forms\Components\Select::make('project_id')
-                    ->relationship('project', 'id'),
+                    ->label('Skill Icon')
+                    ->image()
+                    ->directory('skills')
+                    ->disk('public')
+                    ->imageEditor(),
             ]);
     }
 
@@ -38,10 +41,11 @@ class SkillResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image_url'),
-                Tables\Columns\TextColumn::make('project.id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\ImageColumn::make('image_url')
+                    ->label('Icon'),
+                Tables\Columns\TextColumn::make('projects_count')
+                    ->counts('projects')
+                    ->label('Projects'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
